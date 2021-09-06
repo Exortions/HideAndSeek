@@ -2,6 +2,7 @@ name: HideAndSeek
 version: ${project.version}
 main: com.exortions.hideandseek.HideAndSeek
 api-version: 1.16
+prefix: HS
 authors: [ Exortions ]
 description: A single instance mini-game plugin that allows servers to set up a hide-and-seek mini-game for their players.
 website: exortions.com

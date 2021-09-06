@@ -1,12 +1,10 @@
 storage:
-  # MySQL (mysql database), or LOCAL (stores in plugin folder)
   storage-type: MySQL
 
-  # Leave following blank if using local
   database:
     database: "database-name"
     host: "ip-address"
-    port: "port"
+    port: "3306"
     username: "username"
     password: "password"
 

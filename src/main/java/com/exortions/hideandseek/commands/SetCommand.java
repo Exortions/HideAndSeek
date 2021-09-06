@@ -1,8 +1,11 @@
 package com.exortions.hideandseek.commands;
 
+import com.exortions.hideandseek.HideAndSeek;
+import com.exortions.hideandseek.util.database.DatabaseHandler;
 import com.exortions.pluginutils.command.subcommand.SubCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -45,32 +48,52 @@ public class SetCommand implements SubCommand {
             player.sendMessage(ChatColor.RED + "Incorrect usage!");
             for (String usage : usage().split(" OR ")) player.sendMessage(ChatColor.RED + " > " + ChatColor.WHITE + usage);
         } else {
-            if (args[0].equals("lobby")) {
-                if (args.length == 1) setLobby(player.getLocation(), player); else setLobby(new Location(player.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]), player.getLocation().getYaw(), player.getLocation().getPitch()), player);
-            } else if (args[0].equals("hiderspawn")) {
-                if (args.length == 1) setHiderSpawn(player.getLocation(), player); else setHiderSpawn(new Location(player.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]), player.getLocation().getYaw(), player.getLocation().getPitch()), player);
-            } else if (args[0].equals("seekerspawn")) {
-                if (args.length == 1) setSeekerSpawn(player.getLocation(), player); else setSeekerSpawn(new Location(player.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]), player.getLocation().getYaw(), player.getLocation().getPitch()), player);
-            } else {
-                player.sendMessage(ChatColor.RED + "Incorrect usage!");
-                for (String usage : usage().split(" OR ")) player.sendMessage(ChatColor.RED + " > " + ChatColor.WHITE + usage);
+            String PREFIX = HideAndSeek.PREFIX;
+            Location loc;
+            switch (args[0]) {
+                case "lobby":
+                    if (args.length == 1) loc = player.getLocation();
+                    else
+                        loc = new Location(player.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]), player.getLocation().getYaw(), player.getLocation().getPitch());
+                    setLobby(loc);
+                    player.sendMessage(PREFIX + ChatColor.WHITE + "Successfully set lobby to: " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1);
+                    break;
+                case "hiderspawn":
+                    if (args.length == 1) loc = player.getLocation();
+                    else
+                        loc = new Location(player.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]), player.getLocation().getYaw(), player.getLocation().getPitch());
+                    setHiderSpawn(loc);
+                    player.sendMessage(PREFIX + ChatColor.WHITE + "Successfully set hider spawn to: " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1);
+                    break;
+                case "seekerspawn":
+                    if (args.length == 1) loc = player.getLocation();
+                    else
+                        loc = new Location(player.getWorld(), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]), player.getLocation().getYaw(), player.getLocation().getPitch());
+                    setSeekerSpawn(loc);
+                    player.sendMessage(PREFIX + ChatColor.WHITE + "Successfully set seeker spawn to: " + loc.getX() + " " + loc.getY() + " " + loc.getZ());
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 1);
+                    break;
+                default:
+                    player.sendMessage(ChatColor.RED + "Incorrect usage!");
+                    for (String usage : usage().split(" OR "))
+                        player.sendMessage(ChatColor.RED + " > " + ChatColor.WHITE + usage);
+                    break;
             }
         }
     }
 
-    private void setLobby(Location location, Player player) {
-        // TODO: Set the lobby
-        player.sendMessage("" + location.getX());
-        player.sendMessage("" + location.getY());
-        player.sendMessage("" + location.getZ());
+    private void setLobby(Location location) {
+        HideAndSeek.getDatabase().addLocation(DatabaseHandler.LocationType.LOBBY, "" + Math.floor(location.getX()), "" + Math.floor(location.getY()), "" + Math.floor(location.getZ()));
     }
 
-    private void setHiderSpawn(Location location, Player player) {
-        // TODO: Set the hider's spawn
+    private void setHiderSpawn(Location location) {
+        HideAndSeek.getDatabase().addLocation(DatabaseHandler.LocationType.HIDER_SPAWN, "" + Math.floor(location.getX()), "" + Math.floor(location.getY()), "" + Math.floor(location.getZ()));
     }
 
-    private void setSeekerSpawn(Location location, Player player) {
-        // TODO: Set the seeker's spawn
+    private void setSeekerSpawn(Location location) {
+        HideAndSeek.getDatabase().addLocation(DatabaseHandler.LocationType.SEEKER_SPAWN, "" + Math.floor(location.getX()), "" + Math.floor(location.getY()), "" + Math.floor(location.getZ()));
     }
 
     @Override
